@@ -1,0 +1,2 @@
+# Habber
+Habber XMPP client
