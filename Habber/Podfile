@@ -1,0 +1,1 @@
+pod 'XMPPFramework', :podspec => 'https://raw.githubusercontent.com/andrey-justo-movile/XMPPFramework/3.7.2/XMPPFramework.podspec.json'
