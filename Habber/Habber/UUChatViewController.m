@@ -37,7 +37,7 @@
     _chatTableView.backgroundView = nil;
     _chatTableView.backgroundColor = [UIColor clearColor];
     _chatTableView.opaque = NO;
-    
+    //初始化聊天数组并取得代理
     [self loadBaseViewsAndData];
     mainDelegate = [self getAppDelegate];
 }
@@ -77,7 +77,7 @@
     return [[self getAppDelegate] xmppStream];
 }
 
-#pragma mark -
+#pragma mark - 作者画的界面
 - (void)loadBaseViewsAndData
 {
     self.chatModel = [[ChatModel alloc]init];
@@ -136,6 +136,7 @@
 }
 
 #pragma mark - HabberMessageDelegate implements
+//好了，这边接收到数据进行判断种类并传递
 - (void)newMessageReceived:(NSDictionary *)messageContent {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSDictionary *dic = [NSDictionary dictionary];
@@ -167,6 +168,7 @@
 }
 
 #pragma mark - InputFunctionViewDelegate
+//这里作者给我们的接口省了好多事、注意真机调试的时候不如模拟器速度要快
 - (void)UUInputFunctionView:(UUInputFunctionView *)funcView sendMessage:(NSString *)message
 {
     NSDictionary *dic = @{@"strContent": message,
@@ -227,7 +229,7 @@
         NSData *imgData = UIImageJPEGRepresentation(img, 0.1);
         NSString *imgStr=[imgData base64EncodedStringWithOptions:0];
         
-        //<message ...><body></body><attachment></attachment></message>
+        //<message ...><body></body><img></img></message>
         NSXMLElement *imgAttachment = [NSXMLElement elementWithName:@"image"];
         [imgAttachment setStringValue:imgStr];
         [mes addChild:imgAttachment];
@@ -273,13 +275,16 @@
 }
 
 #pragma mark - cellDelegate
+//这里我就没改、或许你有兴趣添加详细资料、
 - (void)headImageDidClick:(UUMessageCell *)cell userId:(NSString *)userId{
     // headIamgeIcon is clicked
     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:cell.messageFrame.message.strName message:@"headImage clicked" delegate:nil cancelButtonTitle:@"sure" otherButtonTitles:nil];
     [alert show];
 }
 
+//返回上一层
 - (IBAction)back:(UIBarButtonItem *)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
 @end

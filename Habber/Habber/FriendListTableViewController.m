@@ -40,13 +40,13 @@
     [_statusBtn setBackgroundImage:Status forState:UIControlStateNormal];
     [_statusBtn addTarget:self action:@selector(showPopover:forEvent:) forControlEvents:UIControlEventTouchUpInside];
     
-    //然后再以UIBarButton初始化
+    //然后再以UIBarButton初始化，这样UIBarButton就可以显示图片了
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_statusBtn];
     
     UIBarButtonItem *addFriendBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addFriend)];
     self.navigationItem.rightBarButtonItem = addFriendBtn;
     
-    //背景设置
+    //背景设置图片
     self.tableView.backgroundView = nil;
     self.tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"friendsBg"]];
     self.tableView.opaque = NO;
@@ -93,6 +93,9 @@
     self.navigationItem.title = @"Offline";
     [_statusBtn setBackgroundImage:[UIImage imageNamed:@"off"] forState:UIControlStateNormal];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_statusBtn];
+    //离线状态清空联系人
+    [_onlineUsers removeAllObjects];
+    [self.tableView reloadData];
 }
 
 #pragma mark - 获取xmppStream
@@ -128,26 +131,30 @@
 - (void)popoverDismiss {
     [_popoverController dismissPopoverAnimatd:YES];
     [_popoverController dismissViewControllerAnimated:YES completion:nil];
+    //点击注销logout，弹出提示框，点击ok就执行注销
     if ([_tableViewController.status isEqualToString:@"logout"]) {
         _logoutAlert = [[UIAlertView alloc] initWithTitle:@"Logout" message:@"Are you sure about that？" delegate:self cancelButtonTitle:@"Yes" otherButtonTitles:@"No", nil];
         [_logoutAlert show];
         [[self getAppDelegate] disconnect];
     }
+    //上线、
     if ([_tableViewController.status isEqualToString:@"online"]) {
         self.navigationItem.title = @"Connecting...";
         [[self getAppDelegate] connect];
     }
-    //就会调用通过代理请求的
+    //离线、
     if ([_tableViewController.status isEqualToString:@"offline"]) {
         [[self getAppDelegate] disconnect];
     }
 }
 
+//返回好友列表
 - (void)dismissSelf {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+//既然连接失败，那我还是离线的状态
 - (void)connectServerFailed {
     [self offlineSet];
 }
@@ -234,7 +241,7 @@
     [self onlineSet];
 }
 
-//收到好友请求
+//收到好友请求，弹出提示框让你处理
 - (void)receivedFriendRequest:(NSString *)presenceFrom {
     _presenceFromUser = presenceFrom;
     NSString *alertMessage = [NSString stringWithFormat:@"%@ wants add you.", _presenceFromUser];
@@ -243,6 +250,7 @@
 }
 
 #pragma mark - Habber message delegate implements
+//这里就是处理收到的信息了，添加到一个数组里面，最后统统传递给聊天界面
 - (void)newMessageReceived:(NSDictionary *)messageContent {
     NSDictionary *dic = [NSDictionary dictionary];
     NSString *msg = [messageContent objectForKey:@"msg"];
@@ -270,6 +278,7 @@
     //收到消息数组
     [_messages addObject:dic];
     
+    //每次刷新表格，就可以看到有多少条未读信息
     [self.tableView reloadData];
 }
 

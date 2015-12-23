@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		011ED2A7D0D22E42A3C338A0 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F376623E076C0DB19C83FA9 /* libPods.a */; };
 		599F78A11C1FAA8A00FC5304 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599F78A01C1FAA8A00FC5304 /* LoginViewController.swift */; };
-		59A63DB81C29445300887B8D /* SKSplashIcon.m in Sources */ = {isa = PBXBuildFile; fileRef = 59A63DB51C29445300887B8D /* SKSplashIcon.m */; };
-		59A63DB91C29445300887B8D /* SKSplashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59A63DB71C29445300887B8D /* SKSplashView.m */; };
 		59B789FB1C26A08200D76520 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 59B789A01C26A08200D76520 /* AFHTTPRequestOperation.m */; };
 		59B789FC1C26A08200D76520 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 59B789A21C26A08200D76520 /* AFHTTPRequestOperationManager.m */; };
 		59B789FD1C26A08200D76520 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 59B789A41C26A08200D76520 /* AFHTTPSessionManager.m */; };
@@ -102,10 +100,6 @@
 /* Begin PBXFileReference section */
 		599F789D1C1FA9A000FC5304 /* Habber-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Habber-Bridging-Header.h"; sourceTree = "<group>"; };
 		599F78A01C1FAA8A00FC5304 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		59A63DB41C29445300887B8D /* SKSplashIcon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSplashIcon.h; sourceTree = "<group>"; };
-		59A63DB51C29445300887B8D /* SKSplashIcon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSplashIcon.m; sourceTree = "<group>"; };
-		59A63DB61C29445300887B8D /* SKSplashView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSplashView.h; sourceTree = "<group>"; };
-		59A63DB71C29445300887B8D /* SKSplashView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSplashView.m; sourceTree = "<group>"; };
 		59B7899D1C26A08200D76520 /* ACMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACMacros.h; sourceTree = "<group>"; };
 		59B7899F1C26A08200D76520 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		59B789A01C26A08200D76520 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
@@ -266,17 +260,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		59A63DB31C29445300887B8D /* SKSplashView */ = {
-			isa = PBXGroup;
-			children = (
-				59A63DB41C29445300887B8D /* SKSplashIcon.h */,
-				59A63DB51C29445300887B8D /* SKSplashIcon.m */,
-				59A63DB61C29445300887B8D /* SKSplashView.h */,
-				59A63DB71C29445300887B8D /* SKSplashView.m */,
-			);
-			path = SKSplashView;
-			sourceTree = "<group>";
-		};
 		59B7899B1C26A06600D76520 /* UUChatTable */ = {
 			isa = PBXGroup;
 			children = (
@@ -466,7 +449,6 @@
 		59B908FE1C1FFDEF00404564 /* 3rdPart */ = {
 			isa = PBXGroup;
 			children = (
-				59A63DB31C29445300887B8D /* SKSplashView */,
 				59B7899B1C26A06600D76520 /* UUChatTable */,
 				59B908FF1C1FFE0100404564 /* TSPopover */,
 			);
@@ -794,7 +776,6 @@
 				599F78A11C1FAA8A00FC5304 /* LoginViewController.swift in Sources */,
 				59B789FE1C26A08200D76520 /* AFNetworkReachabilityManager.m in Sources */,
 				59B908FA1C1FDB0C00404564 /* FriendListTableViewController.m in Sources */,
-				59A63DB91C29445300887B8D /* SKSplashView.m in Sources */,
 				59BC689B1C21472E00329DCF /* Statics.m in Sources */,
 				59B78A251C26A08200D76520 /* Mp3Recorder.m in Sources */,
 				59B789FF1C26A08200D76520 /* AFSecurityPolicy.m in Sources */,
@@ -806,7 +787,6 @@
 				59F577EE1C1FA5020089469D /* AppDelegate.m in Sources */,
 				59F577EB1C1FA5020089469D /* main.m in Sources */,
 				59B78A1F1C26A08200D76520 /* UIButton+AFNetworking.m in Sources */,
-				59A63DB81C29445300887B8D /* SKSplashIcon.m in Sources */,
 				59B78A221C26A08200D76520 /* UIRefreshControl+AFNetworking.m in Sources */,
 				59B789FD1C26A08200D76520 /* AFHTTPSessionManager.m in Sources */,
 				59B9090E1C1FFE0100404564 /* TSPopoverTouchView.m in Sources */,

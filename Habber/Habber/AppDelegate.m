@@ -18,13 +18,14 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    //设置界面显示等
+    //设置界面显示等，标题栏颜色，状态栏颜色，字体大小等
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:36.0/255 green:36.0/255 blue:36.0/255 alpha:0.9]];
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont boldSystemFontOfSize:13], NSFontAttributeName, nil] forState:UIControlStateNormal];
     
+    //程序打开自动连接服务器
     [self connect];
     
     [NSThread sleepForTimeInterval:1.5];
@@ -68,9 +69,11 @@
     NSString *pass = [defaults stringForKey:PASS];
     NSString *server = [defaults stringForKey:SERVER];
     
+    //已经连接就不用再连接了
     if ([_xmppStream isConnected]) {
         return YES;
     }
+    //没有用户名密码我也不去连接
     if (userId == nil || pass == nil) {
         return NO;
     }

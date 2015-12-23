@@ -18,6 +18,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var serverField:     UITextField!
     @IBOutlet weak var loginButton:     UIButton!
     
+    //新增的登录旋转小菊花状态指示
     private let indicator = UIActivityIndicatorView()
     
     private let friendListTableViewController = FriendListTableViewController()
@@ -38,6 +39,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         loginButton.alpha   = 0;
         serverField.alpha = 0;
         
+        //作者写的动态效果
         UIView.animateWithDuration(0.7, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
             self.usernameField.alpha = 1.0
             self.passwordField.alpha = 1.0
@@ -61,7 +63,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: "changeImage", userInfo: nil, repeats: true)
         self.loginButton(false)
         
-        //活动指示器
+        //这里用手写添加活动指示器，练练手写UI、、
         indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.WhiteLarge
         indicator.center = CGPointMake(loginButton.bounds.size.width/2, loginButton.bounds.size.height/2)
         loginButton.addSubview(indicator)
@@ -71,8 +73,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidAppear(animated: Bool) {
         //监听
+        //登录服务器失败，弹出警示框
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "connectServerFailed", name: "connectServerFailed", object: nil)
+        //认证成功，就可以跳转了
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "hasAuthenticated", name: "hasAuthenticated", object: nil)
+        //认证失败，弹出警示框
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "authenticateFail", name: "authenticateFail", object: nil)
         
         //自动填写文本框
@@ -89,6 +94,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         indicatorStop()
     }
     
+    //控制小菊花的功能块
     func indicatorStop() {
         indicator.stopAnimating()
         indicator.hidden = true
@@ -152,6 +158,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     //MARK: -
     
+    //原作者写的login button动态效果
     func loginButton(enabled: Bool) -> () {
         func enable(){
             UIView.animateWithDuration(0.3, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
@@ -205,7 +212,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         } else {
             defaults.setObject("localhost", forKey: SERVER)
         }
-        //保存
+        //把登录用户数据保存到数据库
         defaults.synchronize()
         
         indicatorStart()
@@ -220,6 +227,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     //MARK: -
     
+    //这里可以给一个注册的页面，添加一个注册的功能，我没有写、那就同步一下数据库吧。
     @IBAction func signupPressed(sender: AnyObject) {
         NSUserDefaults.standardUserDefaults().synchronize()
     }

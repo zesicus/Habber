@@ -10,6 +10,7 @@
 
 @protocol HabberMessageDelegate <NSObject>
 
+//就只负责聊天数据的传送
 - (void)newMessageReceived:(NSDictionary *)messageContent;
 
 @end

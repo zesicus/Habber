@@ -15,11 +15,12 @@
 
 static NSString *previousTime = nil;
 
+//初始化信息数组
 - (void)loadDataSource {
     self.dataSource = [NSMutableArray array];
 }
 
-// 添加自己的item
+// 添加自己的cell格式
 - (void)addSpecifiedItem:(NSDictionary *)dic
 {
     UUMessageFrame *messageFrame = [[UUMessageFrame alloc]init];

@@ -11,11 +11,13 @@
 
 @interface UUChatViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, HabberMessageDelegate>
 
+//接收传递过来的人名
 @property (strong, nonatomic) NSString *chatUserName;
 
 //接收好友界面的消息
 @property (strong, nonatomic) NSMutableArray *messages;
 
+//返回按钮
 - (IBAction)back:(UIBarButtonItem *)sender;
 
 @end

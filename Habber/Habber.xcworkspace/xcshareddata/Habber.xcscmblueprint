@@ -1,0 +1,32 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "E679E263EA8987BA29C249A0EF06F48D6C44A0FF",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "646fb212-6d06-11e3-a2a4-57cd746879f3++1155" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "E679E263EA8987BA29C249A0EF06F48D6C44A0FF" : 0,
+    "646fb212-6d06-11e3-a2a4-57cd746879f3++1155" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "F300C7CE-B542-485C-ADFF-E2645B5476AB",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "E679E263EA8987BA29C249A0EF06F48D6C44A0FF" : "Habber\/",
+    "646fb212-6d06-11e3-a2a4-57cd746879f3++1155" : "Habber\/Habber\/OtherResources\/MJRefresh\/MJRefresh.bundle\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Habber",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Habber\/Habber.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "svn:\/\/192.168.0.179\/BloodSugar",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "646fb212-6d06-11e3-a2a4-57cd746879f3++1155"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/zesicus\/Habber.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E679E263EA8987BA29C249A0EF06F48D6C44A0FF"
+    }
+  ]
+}
