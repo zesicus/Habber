@@ -38,5 +38,8 @@
 - (void)goOnline;
 - (void)goOffline;
 
+//注册
+- (void)signup;
+
 @end
 

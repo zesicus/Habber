@@ -8,7 +8,13 @@
 
 #import "AppDelegate.h"
 
-@interface AppDelegate ()
+@interface AppDelegate () {
+    NSUserDefaults *defaults;
+    NSString *userId;
+    NSString *pass;
+    NSString *server;
+    BOOL signupFlag;
+}
 
 @property (strong, nonatomic) UIImageView *splashView;
 
@@ -26,8 +32,12 @@
     [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont boldSystemFontOfSize:13], NSFontAttributeName, nil] forState:UIControlStateNormal];
     
     //程序打开自动连接服务器
-    [self connect];
-    
+    [self getData];
+    if (userId && pass) {
+        [self connect];
+    }
+    signupFlag = NO;
+    isOpen = NO;
     [NSThread sleepForTimeInterval:1.5];
     
     return YES;
@@ -59,25 +69,40 @@
     [_xmppStream addDelegate:self delegateQueue:dispatch_get_main_queue()];
 }
 
+- (void)getData {
+    //从本地取得用户名密码和服务器地址
+    defaults = [NSUserDefaults standardUserDefaults];
+    userId = [defaults stringForKey:USERID];
+    pass = [defaults stringForKey:PASS];
+    server = [defaults stringForKey:SERVER];
+}
+
 //发送连接服务器请求
 - (BOOL)connect {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"connecting" object:nil];
+    [self connectBasement];
+    [_chatDelegate didConnect];
+    return YES;
+}
+
+- (void)signup {
+    [self connectBasement];
+    
+    signupFlag = YES;
+}
+
+- (void)connectBasement {
     [self setupStream];
     
-    //从本地取得用户名密码和服务器地址
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *userId = [defaults stringForKey:USERID];
-    NSString *pass = [defaults stringForKey:PASS];
-    NSString *server = [defaults stringForKey:SERVER];
+    [self getData];
     
     //已经连接就不用再连接了
     if ([_xmppStream isConnected]) {
-        NSLog(@"%@", server);
-        return YES;
+        return;
     }
     //没有用户名密码我也不去连接
     if (userId == nil || pass == nil) {
-        return NO;
+        return;
     }
     
     //设置用户
@@ -90,12 +115,8 @@
     //连接服务器
     NSError *error = nil;
     if (![_xmppStream connectWithTimeout:5.0 error:&error]) {
-        NSLog(@"连接失败");
-        return NO;
+        NSLog(@"connect-连接 失败 ！！！");
     }
-    [_chatDelegate didConnect];
-    NSLog(@"已连接服务器");
-    return YES;
 }
 
 - (void)disconnect {
@@ -129,7 +150,15 @@
 }
 
 - (void)xmppStream:(XMPPStream *)sender didNotAuthenticate:(DDXMLElement *)error {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"authenticateFail" object:nil];
+    NSError *err;
+    if (signupFlag) {
+        if (![_xmppStream registerWithPassword:pass error:&err]) {
+            NSLog(@"注册失败！, %@", err);
+        }
+        signupFlag = NO;
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"authenticateFail" object:nil];
+    }
 }
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender {
@@ -180,11 +209,11 @@
     //取得好友状态
     NSString *presenceType = [presence type];
     //我的id
-    NSString *userId = [[sender myJID] user];
+    NSString *myId = [[sender myJID] user];
     //对方状态(用user也就相当于强制类型转换成NSString)
     NSString *presenceFromUser = [[presence from] user];
     //如果在列表中把“我”过滤掉
-    if (![presenceFromUser isEqualToString:userId]) {
+    if (![presenceFromUser isEqualToString:myId]) {
         if ([presenceType isEqualToString:@"available"]) {
             [_chatDelegate newBuddyOnline:[NSString stringWithFormat:@"%@@%@", presenceFromUser, @"thinkdifferent.local"]];
         }

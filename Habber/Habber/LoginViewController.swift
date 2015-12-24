@@ -71,6 +71,17 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     override func viewDidAppear(animated: Bool) {
+        //自动填写文本框
+        let defaults = NSUserDefaults.standardUserDefaults();
+        if (defaults.objectForKey(USERID) != nil && defaults.objectForKey(PASS) != nil) {
+            usernameField.text = String(defaults.objectForKey(USERID)!)
+            passwordField.text = String(defaults.objectForKey(PASS)!)
+            self.loginButton(true)
+        }
+        if (defaults.objectForKey(SERVER) != nil) {
+            serverField.text = String(defaults.objectForKey(SERVER)!)
+        }
+        indicatorStop()
         //监听
         //登录服务器失败，弹出警示框
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "connectServerFailed", name: "connectServerFailed", object: nil)
@@ -84,18 +95,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "registerFail", name: "registerFail", object: nil)
         //正在连接
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "connecting", name: "connecting", object: nil)
-        
-        //自动填写文本框
-        let defaults = NSUserDefaults.standardUserDefaults();
-        if (defaults.objectForKey(USERID) != nil && defaults.objectForKey(PASS) != nil) {
-            usernameField.text = String(defaults.objectForKey(USERID)!)
-            passwordField.text = String(defaults.objectForKey(PASS)!)
-            self.loginButton(true)
-        }
-        if (defaults.objectForKey(SERVER) != nil) {
-            serverField.text = String(defaults.objectForKey(SERVER)!)
-        }
-        indicatorStop()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(true)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     //控制小菊花的功能块
@@ -160,7 +164,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             let alert = UIAlertView()
             alert.title = "Register failed!"
             alert.delegate = nil
-            alert.message = "Wrong format!"
+            alert.message = "Wrong format!\nPlease follow the format like this:\nxxx@thinkdifferent.local\n\nBut...success or not depends\nthe mood of the server...😥"
             alert.addButtonWithTitle("OK")
             alert.show()
         }
@@ -192,7 +196,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     func loginButton(enabled: Bool) -> () {
         func enable(){
             UIView.animateWithDuration(0.3, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
-                self.loginButton.backgroundColor = UIColor.colorWithHex("#33CC00", alpha: 1)
+                self.loginButton.backgroundColor = UIColor.colorWithHex("#85c200", alpha: 1)
                 }, completion: nil)
             loginButton.enabled = true
         }
@@ -248,7 +252,17 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     //这里可以给一个注册的页面，添加一个注册的功能，我没有写、那就同步一下数据库吧。
     @IBAction func signupPressed(sender: AnyObject) {
-        saveData()
+        if (usernameField.text?.lengthOfBytesUsingEncoding(0) > 0  && passwordField.text?.lengthOfBytesUsingEncoding(0) > 0) {
+            saveData()
+            getAppDelegate().signup()
+        } else {
+            let alert = UIAlertView()
+            alert.title = "Register"
+            alert.delegate = nil
+            alert.message = "You can sign up on this page\nJust fill the username and\npassword then tap again!\nPlease follow the format like this:\nxxx@thinkdifferent.local"
+            alert.addButtonWithTitle("OK")
+            alert.show()
+        }
     }
     //MARK: -
     
