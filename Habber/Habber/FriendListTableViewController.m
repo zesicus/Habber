@@ -121,6 +121,7 @@
 }
 
 #pragma mark - Selector point here
+//添加好友
 - (void)addFriend {
     _addFriendWindow = [[UIAlertView alloc] initWithTitle:@"Add friend" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:@"Cancel", nil];
     [_addFriendWindow setAlertViewStyle:UIAlertViewStylePlainTextInput];
@@ -204,6 +205,14 @@
     cell.textLabel.text = cellTitle;
     cell.detailTextLabel.text = @"available";
     return cell;
+}
+
+//删除好友
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    XMPPJID *jid = [XMPPJID jidWithString:[_onlineUsers objectAtIndex:indexPath.row]];
+    [_xmppRoster removeUser:jid];
+    [_onlineUsers removeObjectAtIndex:indexPath.row];
+    [self.tableView reloadData];
 }
 
 #pragma mark - Table view delegate implements
