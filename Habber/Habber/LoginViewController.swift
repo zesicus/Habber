@@ -22,6 +22,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     private let indicator = UIActivityIndicatorView()
     
     private let friendListTableViewController = FriendListTableViewController()
+    
     //MARK: Global Variables for Changing Image Functionality.
     private var idx: Int = 0
     private let backGroundArray = [UIImage(named: "img1.jpg"),UIImage(named:"img2.jpg"), UIImage(named: "img3.jpg"), UIImage(named: "img4.jpg")]
@@ -67,8 +68,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.WhiteLarge
         indicator.center = CGPointMake(loginButton.bounds.size.width/2, loginButton.bounds.size.height/2)
         loginButton.addSubview(indicator)
-        indicator.hidden = true
-        
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -79,13 +78,18 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "hasAuthenticated", name: "hasAuthenticated", object: nil)
         //认证失败，弹出警示框
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "authenticateFail", name: "authenticateFail", object: nil)
+        //注册成功
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "registerSuccess", name: "registerSuccess", object: nil)
+        //注册失败
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "registerFail", name: "registerFail", object: nil)
+        //正在连接
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "connecting", name: "connecting", object: nil)
         
         //自动填写文本框
         let defaults = NSUserDefaults.standardUserDefaults();
         if (defaults.objectForKey(USERID) != nil && defaults.objectForKey(PASS) != nil) {
             usernameField.text = String(defaults.objectForKey(USERID)!)
             passwordField.text = String(defaults.objectForKey(PASS)!)
-            //在button上面加个活动指示器
             self.loginButton(true)
         }
         if (defaults.objectForKey(SERVER) != nil) {
@@ -138,6 +142,32 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             self.indicatorStop()
             self.performSegueWithIdentifier("login", sender: nil)
         }
+    }
+    
+    func registerSuccess() {
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            let alert = UIAlertView()
+            alert.title = "Register success!"
+            alert.delegate = nil
+            alert.message = "Congratulation!"
+            alert.addButtonWithTitle("OK")
+            alert.show()
+        }
+    }
+    
+    func registerFail() {
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            let alert = UIAlertView()
+            alert.title = "Register failed!"
+            alert.delegate = nil
+            alert.message = "Wrong format!"
+            alert.addButtonWithTitle("OK")
+            alert.show()
+        }
+    }
+    
+    func connecting() {
+        indicatorStart()
     }
     
     //MARK: - 实现UITextFieldDelegate
@@ -204,6 +234,26 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     //MARK: - 按钮按下
     @IBAction func loginPressed(sender: UIButton) {
+        if (usernameField.text != nil && passwordField.text != nil) {
+            saveData()
+            
+            self.getAppDelegate().connect()
+            
+            usernameField.resignFirstResponder()
+            passwordField.resignFirstResponder()
+            serverField.resignFirstResponder()
+        }
+    }
+    //MARK: - 注册
+    
+    //这里可以给一个注册的页面，添加一个注册的功能，我没有写、那就同步一下数据库吧。
+    @IBAction func signupPressed(sender: AnyObject) {
+        saveData()
+    }
+    //MARK: -
+    
+    //保存登录所有文本框上信息到数据库
+    func saveData() {
         let defaults = NSUserDefaults.standardUserDefaults();
         defaults.setObject(usernameField.text, forKey: USERID)
         defaults.setObject(passwordField.text, forKey: PASS)
@@ -214,24 +264,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
         //把登录用户数据保存到数据库
         defaults.synchronize()
-        
-        indicatorStart()
-        
-        self.getAppDelegate().disconnect()
-        self.getAppDelegate().connect()
-        
-        usernameField.resignFirstResponder()
-        passwordField.resignFirstResponder()
-        serverField.resignFirstResponder()
-
     }
-    //MARK: -
-    
-    //这里可以给一个注册的页面，添加一个注册的功能，我没有写、那就同步一下数据库吧。
-    @IBAction func signupPressed(sender: AnyObject) {
-        NSUserDefaults.standardUserDefaults().synchronize()
-    }
-    
     
     @IBAction func backgroundPressed(sender: AnyObject) {
         usernameField.resignFirstResponder()

@@ -61,6 +61,7 @@
 
 //发送连接服务器请求
 - (BOOL)connect {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"connecting" object:nil];
     [self setupStream];
     
     //从本地取得用户名密码和服务器地址
@@ -71,6 +72,7 @@
     
     //已经连接就不用再连接了
     if ([_xmppStream isConnected]) {
+        NSLog(@"%@", server);
         return YES;
     }
     //没有用户名密码我也不去连接
@@ -88,9 +90,11 @@
     //连接服务器
     NSError *error = nil;
     if (![_xmppStream connectWithTimeout:5.0 error:&error]) {
+        NSLog(@"连接失败");
         return NO;
     }
     [_chatDelegate didConnect];
+    NSLog(@"已连接服务器");
     return YES;
 }
 
@@ -136,6 +140,14 @@
 - (void)xmppStreamDidDisconnect:(XMPPStream *)sender withError:(NSError *)error {
     isOpen = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"connectServerFailed" object:nil];
+}
+
+- (void)xmppStreamDidRegister:(XMPPStream *)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"registerSuccess" object:nil];
+}
+
+- (void)xmppStream:(XMPPStream *)sender didNotRegister:(DDXMLElement *)error {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"registerFail" object:nil];
 }
 
 //收到消息后把消息传递给代理
