@@ -140,6 +140,7 @@
 - (void)newMessageReceived:(NSDictionary *)messageContent {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSDictionary *dic = [NSDictionary dictionary];
+        NSString *composing = [messageContent objectForKey:@"composing"];
         NSString *msg = [messageContent objectForKey:@"msg"];
         NSString *imageStr = [messageContent objectForKey:@"photo"];
         NSString *voiceStr = [messageContent objectForKey:@"voice"];
@@ -163,7 +164,12 @@
                     @"sender": from};
         }
         
-        [self dealTheFunctionData:dic];
+        if (![composing isEqualToString:@"isTyping"]) {
+            [self dealTheFunctionData:dic];
+            self.navigationItem.title = _chatUserName;
+        } else {
+            self.navigationItem.title = @"Is typing...";
+        }
     });
 }
 
@@ -177,7 +183,7 @@
     funcView.TextViewInput.text = @"";
     [funcView changeSendBtnWithPhoto:YES];
     [self dealTheFunctionData:dic];
-    [self sendXML:message image:nil voice:nil time:0];
+    [self sendXML:message image:nil voice:nil time:0 isComposing:@""];
 }
 
 - (void)UUInputFunctionView:(UUInputFunctionView *)funcView sendPicture:(UIImage *)image
@@ -186,7 +192,7 @@
                           @"type": @(UUMessageTypePicture),
                           @"sender": @"Me"};
     [self dealTheFunctionData:dic];
-    [self sendXML:@"" image:image voice:nil time:0];
+    [self sendXML:@"" image:image voice:nil time:0 isComposing:@""];
 }
 
 - (void)UUInputFunctionView:(UUInputFunctionView *)funcView sendVoice:(NSData *)voice time:(NSInteger)second
@@ -196,19 +202,32 @@
                           @"type": @(UUMessageTypeVoice),
                           @"sender": @"Me"};
     [self dealTheFunctionData:dic];
-    [self sendXML:@"" image:nil voice:voice time:second];
+    [self sendXML:@"" image:nil voice:voice time:second isComposing:@""];
 }
 
 - (void)dealTheFunctionData:(NSDictionary *)dic
 {
-    [self.chatModel addSpecifiedItem:dic];
-    [self.chatTableView reloadData];
-    [self tableViewScrollToBottom];
+    if (![[dic objectForKey:@"strContent"] isEqualToString:@""]) {
+        [self.chatModel addSpecifiedItem:dic];
+        [self.chatTableView reloadData];
+        [self tableViewScrollToBottom];
+    }
+}
+
+- (void)composing {
+    [self sendXML:@"" image:nil voice:nil time:0 isComposing:@"isTyping"];
+}
+
+- (void)endComposing {
+    [self sendXML:@"" image:nil voice:nil time:0 isComposing:@""];
 }
 
 #pragma mark - 发送XML封装数据
-- (void)sendXML:(NSString *)message image:(UIImage *)img voice:(NSData *)voice time:(NSUInteger)second{
+- (void)sendXML:(NSString *)message image:(UIImage *)img voice:(NSData *)voice time:(NSUInteger)second isComposing:(NSString *)status{
     //生成xml
+    //<composing>
+    NSXMLElement *composing = [NSXMLElement elementWithName:@"composing"];
+    [composing setStringValue:status];
     //<body>
     NSXMLElement *body = [NSXMLElement elementWithName:@"body"];
     [body setStringValue:message];
@@ -220,7 +239,8 @@
     [mes addAttributeWithName:@"to" stringValue:_chatUserName];
     //<message type = "chat" to = _chatUserName from = ...>
     [mes addAttributeWithName:@"from" stringValue:[[NSUserDefaults standardUserDefaults] stringForKey:USERID]];
-    //<message ...><body></body></message>
+    //<message ...><composing></composing><body></body></message>
+    [mes addChild:composing];
     [mes addChild:body];
     
     if (img) {
@@ -245,6 +265,7 @@
     
     //发送消息
     [[self xmppStream] sendElement:mes];
+    NSLog(@"%@", mes);
 }
 
 #pragma mark - tableView delegate & datasource

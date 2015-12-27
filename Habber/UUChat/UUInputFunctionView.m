@@ -199,6 +199,7 @@
 - (void)textViewDidBeginEditing:(UITextView *)textView
 {
     placeHold.hidden = self.TextViewInput.text.length > 0;
+    [self.delegate composing];
 }
 
 - (void)textViewDidChange:(UITextView *)textView
@@ -219,6 +220,7 @@
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
     placeHold.hidden = self.TextViewInput.text.length > 0;
+    [self.delegate endComposing];
 }
 
 

@@ -181,12 +181,13 @@
 
 //收到消息后把消息传递给代理
 - (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message {
-    //封装好的 文字 + 发送人
+    //解析xml
+    NSString *composing = [[message elementForName:@"composing"] stringValue];
+    composing = !composing ? @"" : composing;
     NSString *msg = [[message elementForName:@"body"] stringValue];
+    msg = !msg ? @"" : msg;
     NSString *img = [[message elementForName:@"image"] stringValue];
-    if (!img) {
-        img = @"";
-    }
+    img = !img ? @"" : img;
     NSString *voice = [[message elementForName:@"voice"] stringValue];
     NSString *voiceTime = [[[message elementForName:@"voice"] attributeForName:@"voiceTime"] stringValue];
     if (!voice) {
@@ -194,7 +195,9 @@
         voiceTime = @"";
     }
     NSString *from = [[message attributeForName:@"from"] stringValue];
+    
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setObject:composing forKey:@"composing"];
     [dict setObject:msg forKey:@"msg"];
     [dict setObject:img forKey:@"photo"];
     [dict setObject:voice forKey:@"voice"];

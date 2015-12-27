@@ -262,6 +262,7 @@
 //这里就是处理收到的信息了，添加到一个数组里面，最后统统传递给聊天界面
 - (void)newMessageReceived:(NSDictionary *)messageContent {
     NSDictionary *dic = [NSDictionary dictionary];
+    NSString *composing = [messageContent objectForKey:@"composing"];
     NSString *msg = [messageContent objectForKey:@"msg"];
     NSString *imageStr = [messageContent objectForKey:@"photo"];
     NSString *voiceStr = [messageContent objectForKey:@"voice"];
@@ -284,11 +285,13 @@
                 @"type": @(UUMessageTypeText),
                 @"sender": from};
     }
-    //收到消息数组
-    [_messages addObject:dic];
     
-    //每次刷新表格，就可以看到有多少条未读信息
-    [self.tableView reloadData];
+    if ((![composing isEqualToString:@"isTyping"] && ![msg isEqualToString:@""]) || ![imageStr isEqualToString:@""] || ![voiceStr isEqualToString:@""]) {
+        //收到消息数组
+        [_messages addObject:dic];
+        //每次刷新表格，就可以看到有多少条未读信息
+        [self.tableView reloadData];
+    }
 }
 
 #pragma mark - XMPPRoster impletes
